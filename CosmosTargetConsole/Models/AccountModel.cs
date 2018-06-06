@@ -32,21 +32,7 @@ namespace CosmosTargetConsole.Models
 
             var added = await AddingDbAsync(gateway, toCreateDbs);
 
-            var toUpdateDbs = currentDatabases.Concat(added);
-            if (toUpdateDbs.Any())
-            {
-                Console.WriteLine("Updating databases:");
-
-                foreach (var db in toUpdateDbs)
-                {
-                    var target = (from t in Databases
-                                  where t.Name == db.Id
-                                  select t).First();
-
-                    Console.WriteLine(db.Id);
-                    await target.ConvergeTargetAsync(gateway, db);
-                }
-            }
+            await UpdatingDbAsync(gateway, currentDatabases.Concat(added));
         }
 
         private static async Task RemovingDbAsync(
@@ -94,6 +80,24 @@ namespace CosmosTargetConsole.Models
             }
 
             return created;
+        }
+
+        private async Task UpdatingDbAsync(CosmosGateway gateway, IEnumerable<Database> toUpdateDbs)
+        {
+            if (toUpdateDbs.Any())
+            {
+                Console.WriteLine("Updating databases:");
+
+                foreach (var db in toUpdateDbs)
+                {
+                    var target = (from t in Databases
+                                  where t.Name == db.Id
+                                  select t).First();
+
+                    Console.WriteLine(db.Id);
+                    await target.ConvergeTargetAsync(gateway, db);
+                }
+            }
         }
     }
 }
