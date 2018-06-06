@@ -31,6 +31,13 @@ namespace CosmosTargetConsole
             await _client.DeleteDatabaseAsync(link);
         }
 
+        public async Task<Database> AddDatabaseAsync(string name)
+        {
+            var response = await _client.CreateDatabaseAsync(new Database { Id = name });
+
+            return response.Resource;
+        }
+
         private async Task<List<T>> GetAllResultsAsync<T>(IDocumentQuery<T> query)
         {
             var list = new List<T>();

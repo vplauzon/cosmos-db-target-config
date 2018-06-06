@@ -29,6 +29,8 @@ namespace CosmosTargetConsole.Models
             var doDestroyDb = DestructiveFlags.Contains("database");
 
             await RemovingDbAsync(gateway, toRemoveDbs, doDestroyDb);
+
+            var added = await AddingDbAsync(gateway, toCreateDbs);
         }
 
         private static async Task RemovingDbAsync(
@@ -53,6 +55,29 @@ namespace CosmosTargetConsole.Models
                     }
                 }
             }
+        }
+
+        private static async Task<IEnumerable<Database>> AddingDbAsync(
+            CosmosGateway gateway,
+            IEnumerable<DatabaseModel> toCreateDbs)
+        {
+            var created = new List<Database>();
+
+            if (toCreateDbs.Any())
+            {
+                Console.WriteLine("Adding databases:");
+
+                foreach (var db in toCreateDbs)
+                {
+                    Console.WriteLine(db.Name);
+
+                    var database = await gateway.AddDatabaseAsync(db.Name);
+
+                    created.Add(database);
+                }
+            }
+
+            return created;
         }
     }
 }

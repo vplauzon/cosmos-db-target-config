@@ -39,7 +39,9 @@ namespace CosmosTargetConsole
 
             client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue
             {
-                NoCache = true
+                Private = true,
+                NoCache = true,
+                NoStore = true
             };
 
             var content = await client.GetStringAsync(url);
