@@ -53,7 +53,7 @@ namespace CosmosTargetConsole.Models
                     }
                     else
                     {
-                        await gateway.DeleteDatabaseAsync(db.SelfLink);
+                        await gateway.DeleteDatabaseAsync(db);
                     }
                 }
             }
@@ -95,7 +95,7 @@ namespace CosmosTargetConsole.Models
                                   select t).First();
 
                     Console.WriteLine(db.Id);
-                    await target.ConvergeTargetAsync(gateway, db);
+                    await target.ConvergeTargetAsync(gateway, db, "  ", DestructiveFlags);
                 }
             }
         }

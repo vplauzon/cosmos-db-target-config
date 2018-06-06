@@ -19,16 +19,16 @@ namespace CosmosTargetConsole
             _client = new DocumentClient(endpoint, key);
         }
 
+        #region Database Operations
         public async Task<IList<Database>> GetDatabasesAsync()
         {
             var dbs = await _client.ReadDatabaseFeedAsync();
 
             return dbs.ToList();
         }
-
-        public async Task DeleteDatabaseAsync(string link)
+        public async Task DeleteDatabaseAsync(Database database)
         {
-            await _client.DeleteDatabaseAsync(link);
+            await _client.DeleteDatabaseAsync(database.SelfLink);
         }
 
         public async Task<Database> AddDatabaseAsync(string name)
@@ -37,6 +37,21 @@ namespace CosmosTargetConsole
 
             return response.Resource;
         }
+        #endregion
+
+        #region Collection Operations
+        public async Task<IList<DocumentCollection>> GetCollectionsAsync(Database db)
+        {
+            var collections = await _client.ReadDocumentCollectionFeedAsync(db.CollectionsLink);
+
+            return collections.ToList();
+        }
+
+        public async Task DeleteCollectionAsync(DocumentCollection collection)
+        {
+            await _client.DeleteDocumentCollectionAsync(collection.SelfLink);
+        }
+        #endregion
 
         private async Task<List<T>> GetAllResultsAsync<T>(IDocumentQuery<T> query)
         {
