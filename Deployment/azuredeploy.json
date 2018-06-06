@@ -4,7 +4,7 @@
   "parameters": {
   },
   "variables": {
-    "Account Name": "[concat('cosmos-', uniqueString(concat(resourceGroup().id, 'cosmos')))]"
+    "Account Name": "[concat('cosmos-test-account-', uniqueString(concat(resourceGroup().id, 'cosmos')))]"
   },
   "resources": [
     {

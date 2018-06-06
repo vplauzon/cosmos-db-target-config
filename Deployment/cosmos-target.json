@@ -1,5 +1,8 @@
 {
   "$schema": "TODO",
+  "destructive-flags": [
+    "collection"
+  ],
   "collections": [
     {
       "name": "mine",
