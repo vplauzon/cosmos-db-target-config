@@ -1,7 +1,7 @@
 {
   "$schema": "TODO",
   "destructiveFlags": [
-    "da2tabase",
+    "database",
     "collection"
   ],
   "databases": [

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Azure.Documents;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,17 +28,29 @@ namespace CosmosTargetConsole.Models
                               select db;
             var doDestroyDb = DestructiveFlags.Contains("database");
 
-            Console.WriteLine("Removing databases:");
-            foreach(var db in toRemoveDbs)
+            await RemovingDbAsync(gateway, toRemoveDbs, doDestroyDb);
+        }
+
+        private static async Task RemovingDbAsync(
+            CosmosGateway gateway,
+            IEnumerable<Database> toRemoveDbs,
+            bool doDestroyDb)
+        {
+            if (toRemoveDbs.Any())
             {
-                Console.WriteLine(db.Id);
-                if(!doDestroyDb)
+                Console.WriteLine("Removing databases:");
+
+                foreach (var db in toRemoveDbs)
                 {
-                    Console.WriteLine("(Skipped:  add Destructive Flags 'database' for destroying dbs)");
-                }
-                else
-                {
-                    await gateway.DeleteDatabaseAsync(db.SelfLink);
+                    Console.WriteLine(db.Id);
+                    if (!doDestroyDb)
+                    {
+                        Console.WriteLine("(Skipped:  add Destructive Flags 'database' for destroying dbs)");
+                    }
+                    else
+                    {
+                        await gateway.DeleteDatabaseAsync(db.SelfLink);
+                    }
                 }
             }
         }
