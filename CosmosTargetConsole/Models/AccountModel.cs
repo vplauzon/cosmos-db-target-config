@@ -31,6 +31,22 @@ namespace CosmosTargetConsole.Models
             await RemovingDbAsync(gateway, toRemoveDbs, doDestroyDb);
 
             var added = await AddingDbAsync(gateway, toCreateDbs);
+
+            var toUpdateDbs = currentDatabases.Concat(added);
+            if (toUpdateDbs.Any())
+            {
+                Console.WriteLine("Updating databases:");
+
+                foreach (var db in toUpdateDbs)
+                {
+                    var target = (from t in Databases
+                                  where t.Name == db.Id
+                                  select t).First();
+
+                    Console.WriteLine(db.Id);
+                    await target.ConvergeTargetAsync(gateway, db);
+                }
+            }
         }
 
         private static async Task RemovingDbAsync(
