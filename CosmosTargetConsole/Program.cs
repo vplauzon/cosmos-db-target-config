@@ -1,4 +1,6 @@
-﻿using Microsoft.Azure.Documents.Client;
+﻿using CosmosTargetConsole.Models;
+using Microsoft.Azure.Documents.Client;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -25,6 +27,8 @@ namespace CosmosTargetConsole
             Console.WriteLine();
             Console.WriteLine(targetContent);
             Console.WriteLine();
+
+            var target = JsonConvert.DeserializeObject<TargetModel>(targetContent);
         }
 
         private static async Task<string> GetContentAsync(string url)
