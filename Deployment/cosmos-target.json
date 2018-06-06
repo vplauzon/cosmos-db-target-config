@@ -1,16 +1,22 @@
 {
   "$schema": "TODO",
-  "destructive-flags": [
+  "destructiveFlags": [
+    "database",
     "collection"
   ],
-  "collections": [
+  "databases": [
     {
-      "name": "mine",
-      "settings": {
-      }
-    },
-    {
-      "name": "yours"
+      "name": "mydb",
+      "collections": [
+        {
+          "name": "mine",
+          "settings": {
+          }
+        },
+        {
+          "name": "yours"
+        }
+      ]
     }
   ]
 }
