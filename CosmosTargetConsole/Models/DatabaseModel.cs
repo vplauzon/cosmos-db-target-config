@@ -30,19 +30,17 @@ namespace CosmosTargetConsole.Models
             var toRemove = from coll in currentCollections
                            where !targetIds.Contains(coll.Id)
                            select coll;
-            var doDestroyCollections = destructiveFlags.Contains("collection");
+            var doDestroy = destructiveFlags.Contains("collection");
 
-            await RemovingCollectionAsync(gateway, toRemove, doDestroyCollections, outputPrefix);
-
-            //var added = await AddingCollectionAsync(gateway, toCreate);
-
-            //await UpdatingCollectionAsync(gateway, currentCollections.Concat(added));
+            await RemovingCollectionsAsync(gateway, toRemove, doDestroy, outputPrefix);
+            await AddingCollectionsAsync(gateway, db, toCreate, outputPrefix);
+            //await UpdatingCollectionsAsync(gateway, currentCollections.Concat(added));
         }
 
-        private async Task RemovingCollectionAsync(
+        private async Task RemovingCollectionsAsync(
             CosmosGateway gateway,
             IEnumerable<DocumentCollection> toRemove,
-            bool doDestroyCollections,
+            bool doDestroy,
             string outputPrefix)
         {
             if (toRemove.Any())
@@ -52,7 +50,7 @@ namespace CosmosTargetConsole.Models
                 foreach (var collection in toRemove)
                 {
                     Console.WriteLine(outputPrefix + collection.Id);
-                    if (!doDestroyCollections)
+                    if (!doDestroy)
                     {
                         Console.WriteLine(outputPrefix
                             + "(Skipped:  add Destructive Flags 'collection' for destroying collections)");
@@ -61,6 +59,31 @@ namespace CosmosTargetConsole.Models
                     {
                         await gateway.DeleteCollectionAsync(collection);
                     }
+                }
+            }
+        }
+
+        private async Task AddingCollectionsAsync(
+            CosmosGateway gateway,
+            Database db,
+            IEnumerable<CollectionModel> toCreate,
+            string outputPrefix)
+        {
+            if (toCreate.Any())
+            {
+                Console.WriteLine(outputPrefix + "Adding collections:");
+
+                foreach (var target in toCreate)
+                {
+                    Console.WriteLine(outputPrefix + target.Name);
+
+                    var collection = await gateway.AddCollectionAsync(db, target.Name);
+
+                    //await target.ConvergeTargetAsync(
+                    //    gateway,
+                    //    db,
+                    //    outputPrefix,
+                    //    DestructiveFlags);
                 }
             }
         }

@@ -51,6 +51,18 @@ namespace CosmosTargetConsole
         {
             await _client.DeleteDocumentCollectionAsync(collection.SelfLink);
         }
+
+        public async Task<DocumentCollection> AddCollectionAsync(Database db, string name)
+        {
+            var response = await _client.CreateDocumentCollectionAsync(
+                db.SelfLink,
+                new DocumentCollection
+                {
+                    Id = name
+                });
+
+            return response.Resource;
+        }
         #endregion
 
         private async Task<List<T>> GetAllResultsAsync<T>(IDocumentQuery<T> query)
