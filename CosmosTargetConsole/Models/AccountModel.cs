@@ -26,13 +26,14 @@ namespace CosmosTargetConsole.Models
             var toRemoveDbs = from db in currentDatabases
                               where !targetIds.Contains(db.Id)
                               select db;
+            var toUpdateDbs = from db in currentDatabases
+                              where targetIds.Contains(db.Id)
+                              select db;
             var doDestroyDb = DestructiveFlags.Contains("database");
 
             await RemovingDbAsync(gateway, toRemoveDbs, doDestroyDb);
-
-            var added = await AddingDbAsync(gateway, toCreateDbs);
-
-            await UpdatingDbAsync(gateway, currentDatabases.Concat(added));
+            await AddingDbAsync(gateway, toCreateDbs);
+            await UpdatingDbAsync(gateway, toUpdateDbs);
         }
 
         private static async Task RemovingDbAsync(
@@ -59,30 +60,32 @@ namespace CosmosTargetConsole.Models
             }
         }
 
-        private static async Task<IEnumerable<Database>> AddingDbAsync(
+        private async Task AddingDbAsync(
             CosmosGateway gateway,
             IEnumerable<DatabaseModel> toCreateDbs)
         {
-            var created = new List<Database>();
-
             if (toCreateDbs.Any())
             {
                 Console.WriteLine("Adding databases:");
 
-                foreach (var db in toCreateDbs)
+                foreach (var target in toCreateDbs)
                 {
-                    Console.WriteLine(db.Name);
+                    Console.WriteLine(target.Name);
 
-                    var database = await gateway.AddDatabaseAsync(db.Name);
+                    var db = await gateway.AddDatabaseAsync(target.Name);
 
-                    created.Add(database);
+                    await target.ConvergeTargetAsync(
+                        gateway,
+                        db,
+                        "  ",
+                        DestructiveFlags);
                 }
             }
-
-            return created;
         }
 
-        private async Task UpdatingDbAsync(CosmosGateway gateway, IEnumerable<Database> toUpdateDbs)
+        private async Task UpdatingDbAsync(
+            CosmosGateway gateway,
+            IEnumerable<Database> toUpdateDbs)
         {
             if (toUpdateDbs.Any())
             {
