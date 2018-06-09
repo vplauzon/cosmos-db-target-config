@@ -7,10 +7,16 @@
   "databases": [
     {
       "name": "mydb",
+      "throughput": {
+        "ru": 50000
+      },
       "collections": [
         {
           "name": "mine",
-          "settings": {
+          "throughput": {
+            "usePartitions": true,
+            "ru": 15000,
+            "enableRUPerMinute": true
           }
         },
         {
