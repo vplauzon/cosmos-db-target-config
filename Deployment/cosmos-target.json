@@ -6,7 +6,7 @@
   ],
   "databases": [
     {
-      "name": "mydb2",
+      "name": "mydb",
       "collections": [
         {
           "name": "mine",
