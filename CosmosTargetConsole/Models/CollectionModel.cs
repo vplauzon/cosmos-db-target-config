@@ -14,7 +14,6 @@ namespace CosmosTargetConsole.Models
             CosmosGateway gateway,
             Database db,
             DocumentCollection collection,
-            string outputPrefix,
             string[] destructiveFlags)
         {
             return Task.CompletedTask;

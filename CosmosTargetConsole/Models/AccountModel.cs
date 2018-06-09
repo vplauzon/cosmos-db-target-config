@@ -20,86 +20,70 @@ namespace CosmosTargetConsole.Models
                              select db.Id;
             var targetIds = from db in Databases
                             select db.Name;
-            var toCreateDbs = from db in Databases
-                              where !currentIds.Contains(db.Name)
-                              select db;
-            var toRemoveDbs = from db in currentDatabases
-                              where !targetIds.Contains(db.Id)
-                              select db;
-            var toUpdateDbs = from db in currentDatabases
-                              where targetIds.Contains(db.Id)
-                              select db;
-            var doDestroyDb = DestructiveFlags.Contains("database");
+            var toCreate = from db in Databases
+                           where !currentIds.Contains(db.Name)
+                           select db;
+            var toRemove = from db in currentDatabases
+                           where !targetIds.Contains(db.Id)
+                           select db;
+            var toUpdate = from db in currentDatabases
+                           where targetIds.Contains(db.Id)
+                           select db;
 
-            await RemovingDbAsync(gateway, toRemoveDbs, doDestroyDb);
-            await AddingDbAsync(gateway, toCreateDbs);
-            await UpdatingDbAsync(gateway, toUpdateDbs);
+            await RemovingDbAsync(gateway, toRemove);
+            await AddingDbAsync(gateway, toCreate);
+            await UpdatingDbAsync(gateway, toUpdate);
         }
 
-        private static async Task RemovingDbAsync(
+        private async Task RemovingDbAsync(
             CosmosGateway gateway,
-            IEnumerable<Database> toRemoveDbs,
-            bool doDestroyDb)
+            IEnumerable<Database> toRemove)
         {
-            if (toRemoveDbs.Any())
-            {
-                Console.WriteLine("Removing databases:");
+            var doDestroyDb = DestructiveFlags.Contains("database");
 
-                foreach (var db in toRemoveDbs)
+            foreach (var db in toRemove)
+            {
+                Console.WriteLine($"Removing database:  {db.Id}");
+                if (!doDestroyDb)
                 {
-                    Console.WriteLine(db.Id);
-                    if (!doDestroyDb)
-                    {
-                        Console.WriteLine("(Skipped:  add Destructive Flags 'database' for destroying dbs)");
-                    }
-                    else
-                    {
-                        await gateway.DeleteDatabaseAsync(db);
-                    }
+                    Console.WriteLine("(Skipped:  add Destructive Flags 'database' for destroying dbs)");
+                }
+                else
+                {
+                    await gateway.DeleteDatabaseAsync(db);
                 }
             }
         }
 
         private async Task AddingDbAsync(
             CosmosGateway gateway,
-            IEnumerable<DatabaseModel> toCreateDbs)
+            IEnumerable<DatabaseModel> toCreate)
         {
-            if (toCreateDbs.Any())
+            foreach (var target in toCreate)
             {
-                Console.WriteLine("Adding databases:");
+                Console.WriteLine($"Adding database:  {target.Name}");
 
-                foreach (var target in toCreateDbs)
-                {
-                    Console.WriteLine(target.Name);
+                var db = await gateway.AddDatabaseAsync(target.Name);
 
-                    var db = await gateway.AddDatabaseAsync(target.Name);
-
-                    await target.ConvergeTargetAsync(
-                        gateway,
-                        db,
-                        "  ",
-                        DestructiveFlags);
-                }
+                await target.ConvergeTargetAsync(
+                    gateway,
+                    db,
+                    DestructiveFlags);
             }
         }
 
         private async Task UpdatingDbAsync(
             CosmosGateway gateway,
-            IEnumerable<Database> toUpdateDbs)
+            IEnumerable<Database> toUpdate)
         {
-            if (toUpdateDbs.Any())
+            foreach (var db in toUpdate)
             {
-                Console.WriteLine("Updating databases:");
+                var target = (from t in Databases
+                              where t.Name == db.Id
+                              select t).First();
 
-                foreach (var db in toUpdateDbs)
-                {
-                    var target = (from t in Databases
-                                  where t.Name == db.Id
-                                  select t).First();
-
-                    Console.WriteLine(db.Id);
-                    await target.ConvergeTargetAsync(gateway, db, "  ", DestructiveFlags);
-                }
+                Console.WriteLine($"Updating database:  {db.Id}");
+                await target.ConvergeTargetAsync(gateway, db, DestructiveFlags);
             }
         }
     }
