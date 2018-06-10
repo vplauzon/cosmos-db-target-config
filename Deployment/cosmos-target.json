@@ -15,7 +15,7 @@
           "name": "mine",
           "throughput": {
             "usePartitions": true,
-            "ru": 600,
+            "ru": 700,
             "enableRUPerMinute": true
           }
         },
