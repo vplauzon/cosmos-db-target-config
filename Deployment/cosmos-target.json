@@ -14,13 +14,16 @@
         {
           "name": "mine",
           "throughput": {
-            "usePartitions": true,
             "ru": 700,
             "enableRUPerMinute": true
           }
         },
         {
-          "name": "yours"
+          "name": "yours",
+          "throughput": {
+            "ru": 1200,
+            "enableRUPerMinute": false
+          }
         }
       ]
     }
