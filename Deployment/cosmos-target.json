@@ -15,7 +15,7 @@
           "name": "mine",
           "partitionKey":"/dept",
           "throughput": {
-            "ru": 700
+            "ru": 1200
           }
         },
         {
