@@ -13,10 +13,9 @@
       "collections": [
         {
           "name": "mine",
-          ""
+          "partitionKey":"/dept",
           "throughput": {
-            "ru": 700,
-            "enableRUPerMinute": true
+            "ru": 700
           }
         },
         {
