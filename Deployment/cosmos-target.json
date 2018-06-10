@@ -13,7 +13,7 @@
       "collections": [
         {
           "name": "mine",
-          "partitionKeyPaths":["/dept", "/salaryRange"]
+          "partitionKeyPaths":["/dept", "/salaryRange"],
           "throughput": {
             "ru": 700,
             "enableRUPerMinute": true
