@@ -19,7 +19,10 @@
           }
         },
         {
-          "name": "yours"
+          "name": "yours",
+          "throughput": {
+            "ru": 2500
+          }
         }
       ]
     }
