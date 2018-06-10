@@ -64,6 +64,30 @@ namespace CosmosTargetConsole
         }
         #endregion
 
+        #region Offer Operations
+        public async Task<OfferV2> GetOfferAsync(string resourceLink)
+        {
+            var offerQuery = from o in _client.CreateOfferQuery()
+                             where o.ResourceLink == resourceLink
+                             select o;
+            var offer = (await GetAllResultsAsync(offerQuery.AsDocumentQuery()))
+                .FirstOrDefault()
+                as OfferV2;
+
+            return offer;
+        }
+
+        public async Task ReplaceOfferAsync(OfferV2 offer, int ru, bool enableRUPerMinute)
+        {
+            var newOffer = new OfferV2(
+                offer,
+                ru,
+                enableRUPerMinute);
+
+            await _client.ReplaceOfferAsync(newOffer);
+        }
+        #endregion
+
         private async Task<List<T>> GetAllResultsAsync<T>(IDocumentQuery<T> query)
         {
             var list = new List<T>();

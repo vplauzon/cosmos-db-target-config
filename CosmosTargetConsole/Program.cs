@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace CosmosTargetConsole
@@ -36,14 +35,6 @@ namespace CosmosTargetConsole
         private static async Task<string> GetContentAsync(string url)
         {
             var client = new HttpClient();
-
-            client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue
-            {
-                Private = true,
-                NoCache = true,
-                NoStore = true
-            };
-
             var content = await client.GetStringAsync(url);
 
             return content;
