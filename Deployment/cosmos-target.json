@@ -19,11 +19,7 @@
           }
         },
         {
-          "name": "yours",
-          "throughput": {
-            "ru": 1200,
-            "enableRUPerMinute": false
-          }
+          "name": "yours"
         }
       ]
     }
