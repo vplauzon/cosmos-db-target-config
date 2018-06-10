@@ -76,12 +76,9 @@ namespace CosmosTargetConsole.Models
             {
                 Console.WriteLine($"Adding collection:  {target.Name}");
 
-                var collection = await gateway.AddCollectionAsync(db, target.Name);
-
-                await target.ConvergeTargetAsync(
+                await target.AddCollectionAsync(
                     gateway,
                     db,
-                    collection,
                     destructiveFlags);
             }
         }

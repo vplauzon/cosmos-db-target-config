@@ -3,6 +3,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,14 +52,27 @@ namespace CosmosTargetConsole
             await _client.DeleteDocumentCollectionAsync(collection.SelfLink);
         }
 
-        public async Task<DocumentCollection> AddCollectionAsync(Database db, string name)
+        public async Task<DocumentCollection> AddCollectionAsync(
+            Database db,
+            string name,
+            string partitionKey)
         {
+            var collection = new DocumentCollection
+            {
+                Id = name
+            };
+
+            if (partitionKey != null)
+            {
+                collection.PartitionKey = new PartitionKeyDefinition
+                {
+                    Paths = new Collection<string>(new[] { partitionKey })
+                };
+            }
+
             var response = await _client.CreateDocumentCollectionAsync(
                 db.SelfLink,
-                new DocumentCollection
-                {
-                    Id = name
-                });
+                collection);
 
             return response.Resource;
         }
