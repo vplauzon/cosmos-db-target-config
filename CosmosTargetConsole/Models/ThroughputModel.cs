@@ -10,5 +10,14 @@ namespace CosmosTargetConsole.Models
         public int RU { get; set; }
 
         public bool EnableRUPerMinute { get; set; }
+
+        public static ThroughputModel CreateDefaultUnpartitioned()
+        {
+            return new ThroughputModel
+            {
+                RU = 400,
+                EnableRUPerMinute = false
+            };
+        }
     }
 }

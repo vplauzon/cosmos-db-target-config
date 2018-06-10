@@ -28,19 +28,26 @@ namespace CosmosTargetConsole.Models
             {
                 throw new NotImplementedException();
             }
-            else if (offer != null && Throughput == null)
+            else if (offer != null)
             {
-                throw new NotImplementedException();
-            }
-            else if (offer != null && Throughput != null)
-            {
-                if (offer.Content.OfferThroughput != Throughput.RU
-                    || offer.Content.OfferIsRUPerMinuteThroughputEnabled != Throughput.EnableRUPerMinute)
+                var throughput = Throughput ?? ThroughputModel.CreateDefaultUnpartitioned();
+
+                if (offer.Content.OfferThroughput != throughput.RU
+                    || offer.Content.OfferIsRUPerMinuteThroughputEnabled != throughput.EnableRUPerMinute)
                 {
-                    await gateway.ReplaceOfferAsync(
+                    var newOffer = await gateway.ReplaceOfferAsync(
                         offer,
-                        Throughput.RU,
-                        Throughput.EnableRUPerMinute);
+                        throughput.RU,
+                        throughput.EnableRUPerMinute);
+
+                    if (newOffer.Content.OfferThroughput != throughput.RU)
+                    {
+                        Console.WriteLine("Can't sync throughput RU");
+                    }
+                    if (newOffer.Content.OfferIsRUPerMinuteThroughputEnabled != throughput.EnableRUPerMinute)
+                    {
+                        Console.WriteLine("Can't sync throughput enable RU per minute");
+                    }
                 }
             }
         }

@@ -77,14 +77,15 @@ namespace CosmosTargetConsole
             return offer;
         }
 
-        public async Task ReplaceOfferAsync(OfferV2 offer, int ru, bool enableRUPerMinute)
+        public async Task<OfferV2> ReplaceOfferAsync(OfferV2 offer, int ru, bool enableRUPerMinute)
         {
             var newOffer = new OfferV2(
                 offer,
                 ru,
                 enableRUPerMinute);
+            var response = await _client.ReplaceOfferAsync(newOffer);
 
-            await _client.ReplaceOfferAsync(newOffer);
+            return response.Resource as OfferV2;
         }
         #endregion
 
