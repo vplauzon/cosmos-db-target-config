@@ -55,7 +55,9 @@ namespace CosmosTargetConsole
         public async Task<DocumentCollection> AddCollectionAsync(
             Database db,
             string name,
-            string partitionKey)
+            string partitionKey,
+            int ru,
+            bool enableRUPerMinute)
         {
             var collection = new DocumentCollection
             {
@@ -72,7 +74,12 @@ namespace CosmosTargetConsole
 
             var response = await _client.CreateDocumentCollectionAsync(
                 db.SelfLink,
-                collection);
+                collection,
+                new RequestOptions
+                {
+                    OfferThroughput = ru,
+                    OfferEnableRUPerMinuteThroughput = enableRUPerMinute
+                });
 
             return response.Resource;
         }

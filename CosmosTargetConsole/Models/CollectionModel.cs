@@ -16,7 +16,18 @@ namespace CosmosTargetConsole.Models
 
         public async Task AddCollectionAsync(CosmosGateway gateway, Database db, string[] destructiveFlags)
         {
-            var collection = await gateway.AddCollectionAsync(db, Name, PartitionKey);
+            var throughput = Throughput ??
+                (
+                PartitionKey == null
+                ? ThroughputModel.CreateDefaultPartitioned()
+                : ThroughputModel.CreateDefaultUnpartitioned()
+                );
+            var collection = await gateway.AddCollectionAsync(
+                db,
+                Name,
+                PartitionKey,
+                throughput.RU,
+                throughput.EnableRUPerMinute);
 
             await ConvergeTargetAsync(gateway, db, collection, destructiveFlags);
         }
