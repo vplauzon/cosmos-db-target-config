@@ -12,8 +12,7 @@
           "name": "partitioned",
           "partitionKey": "/dept",
           "throughput": {
-            "ru": 1200,
-            "enableRUPerMinute": true
+            "ru": 1200
           }
         },
         {
@@ -32,7 +31,10 @@
       "collections": [
         {
           "name": "partitioned",
-          "partitionKey": "/dept"
+          "partitionKey": "/dept",
+          "throughput": {
+            "ru": 3700
+          }
         },
         {
           "name": "unpartitioned"
@@ -41,8 +43,7 @@
           "name": "override-throughput",
           "partitionKey": "/age",
           "throughput": {
-            "ru": 2500,
-            "enableRUPerMinute": true
+            "ru": 2500
           }
         }
       ]
