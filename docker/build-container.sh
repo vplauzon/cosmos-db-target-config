@@ -5,7 +5,7 @@ rm temp -r
 mkdir temp
 
 #	Build console app & drop them in temp folder
-dotnet build ../CosmosTargetConsole/ -c release -o temp
+dotnet build ../CosmosTargetConsole/ -c release -o ../docker/temp
 
 #	Build docker container
 sudo docker build -t vplauzon/cosmos-db-target-config .
