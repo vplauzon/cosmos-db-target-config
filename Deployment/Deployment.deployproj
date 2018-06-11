@@ -30,6 +30,7 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
+    <None Include="sproc1.js" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
