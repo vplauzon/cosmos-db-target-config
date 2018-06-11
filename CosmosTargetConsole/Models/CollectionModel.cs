@@ -120,13 +120,11 @@ namespace CosmosTargetConsole.Models
             await AddingStoredProceduresAsync(
                 gateway,
                 collection,
-                toCreate,
-                destructiveFlags);
+                toCreate);
             await UpdatingStoredProceduresAsync(
                 gateway,
                 collection,
-                toUpdate,
-                destructiveFlags);
+                toUpdate);
         }
 
         private async Task RemovingStoredProceduresAsync(
@@ -149,22 +147,36 @@ namespace CosmosTargetConsole.Models
             }
         }
 
-        private Task AddingStoredProceduresAsync(
+        private async Task AddingStoredProceduresAsync(
             CosmosGateway gateway,
             DocumentCollection collection,
-            IEnumerable<StoredProcedureModel> toCreate,
-            string[] destructiveFlags)
+            IEnumerable<StoredProcedureModel> toCreate)
         {
-            throw new NotImplementedException();
+            foreach (var target in toCreate)
+            {
+                Console.WriteLine($"Adding stored procedure:  {target.Name}");
+
+                await target.AddStoredProcedureAsync(gateway, collection);
+            }
+
         }
 
-        private Task UpdatingStoredProceduresAsync(
+        private async Task UpdatingStoredProceduresAsync(
             CosmosGateway gateway,
             DocumentCollection collection,
-            IEnumerable<StoredProcedure> toUpdate,
-            string[] destructiveFlags)
+            IEnumerable<StoredProcedure> toUpdate)
         {
-            throw new NotImplementedException();
+            foreach (var sproc in toUpdate)
+            {
+                var target = (from t in StoredProcedures
+                              where t.Name == sproc.Id
+                              select t).First();
+
+                await target.ConvergeTargetAsync(
+                    gateway,
+                    collection,
+                    sproc);
+            }
         }
     }
 }

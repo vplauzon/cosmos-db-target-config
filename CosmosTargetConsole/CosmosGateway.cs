@@ -111,7 +111,7 @@ namespace CosmosTargetConsole
         }
         #endregion
 
-        #region Offer Operations
+        #region Stored Procedure Operations
         public async Task<StoredProcedure[]> GetStoredProceduresAsync(DocumentCollection collection)
         {
             var query = _client.CreateStoredProcedureQuery(collection.SelfLink);
@@ -123,6 +123,13 @@ namespace CosmosTargetConsole
         public async Task DeleteStoredProcedureAsync(StoredProcedure storedProcedure)
         {
             await _client.DeleteStoredProcedureAsync(storedProcedure.SelfLink);
+        }
+
+        public async Task UpsertStoredProcedureAsync(
+            DocumentCollection collection,
+            StoredProcedure storedProcedure)
+        {
+            await _client.UpsertStoredProcedureAsync(collection.SelfLink, storedProcedure);
         }
         #endregion
 
