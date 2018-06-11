@@ -76,6 +76,8 @@ namespace CosmosTargetConsole.Models
                         offer,
                         RequestUnits.Value);
 
+                    Console.WriteLine("Update Request Units from "
+                        + $"{offer.Content.OfferThroughput} to {RequestUnits}");
                     if (newOffer.Content.OfferThroughput != RequestUnits)
                     {
                         throw new InvalidOperationException("Can't sync throughput RU");
