@@ -21,7 +21,7 @@
     },
     {
       "name": "throughput-in-db",
-      "ru": 50000,
+      "requestUnits": 50000,
       "collections": [
         {
           "name": "partitioned",
