@@ -26,8 +26,7 @@ namespace CosmosTargetConsole.Models
                 db,
                 Name,
                 PartitionKey,
-                throughput.RU,
-                throughput.EnableRUPerMinute);
+                throughput.RU);
 
             await ConvergeTargetAsync(gateway, db, collection, destructiveFlags);
         }
@@ -70,23 +69,15 @@ namespace CosmosTargetConsole.Models
             {
                 var throughput = Throughput ?? ThroughputModel.CreateDefaultUnpartitioned();
 
-                if (offer.Content.OfferThroughput != throughput.RU
-                    || offer.Content.OfferIsRUPerMinuteThroughputEnabled != throughput.EnableRUPerMinute)
+                if (offer.Content.OfferThroughput != throughput.RU)
                 {
                     var newOffer = await gateway.ReplaceOfferAsync(
                         offer,
-                        throughput.RU,
-                        throughput.EnableRUPerMinute);
+                        throughput.RU);
 
                     if (newOffer.Content.OfferThroughput != throughput.RU)
                     {
                         throw new InvalidOperationException("Can't sync throughput RU");
-                    }
-                    if (newOffer.Content.OfferIsRUPerMinuteThroughputEnabled
-                        != throughput.EnableRUPerMinute)
-                    {
-                        throw new InvalidOperationException(
-                            "Can't sync throughput enable RU per minute");
                     }
                 }
             }

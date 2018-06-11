@@ -12,7 +12,6 @@ namespace CosmosTargetConsole
     public class CosmosGateway
     {
         private readonly DocumentClient _client;
-        private readonly Uri _collectionUri;
 
         public CosmosGateway(Uri endpoint, string key)
         {
@@ -56,8 +55,7 @@ namespace CosmosTargetConsole
             Database db,
             string name,
             string partitionKey,
-            int ru,
-            bool enableRUPerMinute)
+            int ru)
         {
             var collection = new DocumentCollection
             {
@@ -77,8 +75,7 @@ namespace CosmosTargetConsole
                 collection,
                 new RequestOptions
                 {
-                    OfferThroughput = ru,
-                    OfferEnableRUPerMinuteThroughput = enableRUPerMinute
+                    OfferThroughput = ru
                 });
 
             return response.Resource;
@@ -98,12 +95,11 @@ namespace CosmosTargetConsole
             return offer;
         }
 
-        public async Task<OfferV2> ReplaceOfferAsync(OfferV2 offer, int ru, bool enableRUPerMinute)
+        public async Task<OfferV2> ReplaceOfferAsync(OfferV2 offer, int ru)
         {
             var newOffer = new OfferV2(
                 offer,
-                ru,
-                enableRUPerMinute);
+                ru);
             var response = await _client.ReplaceOfferAsync(newOffer);
 
             return response.Resource as OfferV2;
