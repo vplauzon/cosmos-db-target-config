@@ -9,17 +9,39 @@ namespace CosmosTargetConsole
     {
         static void Main(string[] args)
         {
-            var accountEndpoint = new Uri(Environment.GetEnvironmentVariable("ACCOUNT_ENDPOINT"));
+            var accountEndpointText = Environment.GetEnvironmentVariable("ACCOUNT_ENDPOINT");
             var key = Environment.GetEnvironmentVariable("ACCOUNT_KEY");
             var targetUrl = Environment.GetEnvironmentVariable("TARGET_URL");
-            var gateway = new CosmosGateway(accountEndpoint, key);
 
-            Console.WriteLine($"Account Endpoint:  {accountEndpoint}");
+            Console.WriteLine($"Account Endpoint:  {accountEndpointText}");
             Console.WriteLine($"Account Key:  {key}");
             Console.WriteLine($"Target URL:  {targetUrl}");
             Console.WriteLine();
+
+            if(string.IsNullOrWhiteSpace(accountEndpointText))
+            {
+                Console.WriteLine("Environment Variable ACCOUNT_ENDPOINT missing");
+
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                Console.WriteLine("Environment Variable ACCOUNT_KEY missing");
+
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(targetUrl))
+            {
+                Console.WriteLine("Environment Variable TARGET_URL missing");
+
+                return;
+            }
+
+            var accountEndpoint = new Uri(accountEndpointText);
+
             Console.WriteLine("Target Content:");
 
+            var gateway = new CosmosGateway(accountEndpoint, key);
             var targetContent = ContentHelper.GetContentAsync(targetUrl).Result;
 
             Console.WriteLine();
