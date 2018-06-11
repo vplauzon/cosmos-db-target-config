@@ -31,12 +31,8 @@
       "requestUnits": 50000,
       "collections": [
         {
-          "name": "partitioned",
-          "partitionKey": "/dept",
-          "requestUnits": 3700
-        },
-        {
-          "name": "unpartitioned"
+          "name": "partitioned-default-throughput",
+          "partitionKey": "/dept"
         },
         {
           "name": "override-throughput",
