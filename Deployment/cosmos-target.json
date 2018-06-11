@@ -14,22 +14,25 @@
           "requestUnits": 1200
         },
         {
-          "name": "unpartitioned",
+          "name": "partitioned-default-throughput",
+          "partitionKey": "/dept"
+        },
+        {
+          "name": "unpartitioned-default-throughput",
           "requestUnits": 2500
+        },
+        {
+          "name": "unpartitioned"
         }
       ]
     },
     {
       "name": "throughput-in-db",
-      "ru": 50000,
+      "requestUnits": 50000,
       "collections": [
         {
-          "name": "partitioned",
-          "partitionKey": "/dept",
-          "requestUnits": 3700
-        },
-        {
-          "name": "unpartitioned"
+          "name": "partitioned-default-throughput",
+          "partitionKey": "/dept"
         },
         {
           "name": "override-throughput",
