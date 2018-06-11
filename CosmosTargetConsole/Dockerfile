@@ -5,7 +5,7 @@ FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
 
 #	Copy source code into the source folder
-COPY ../CosmosTargetConsole .
+COPY . .
 
 #	Publish the app into the app folder
 RUN dotnet publish . -c release -o app
