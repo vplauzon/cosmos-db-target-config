@@ -27,4 +27,4 @@ ENV ACCOUNT_KEY ""
 ENV TARGET_URL ""
 
 #	Run console app
-CMD ["dotnet", "CosmosTargetConsole"]
+CMD ["dotnet", "CosmosTargetConsole.dll"]
