@@ -14,8 +14,15 @@
           "requestUnits": 1200
         },
         {
-          "name": "unpartitioned",
+          "name": "partitioned-default-throughput",
+          "partitionKey": "/dept"
+        },
+        {
+          "name": "unpartitioned-default-throughput",
           "requestUnits": 2500
+        },
+        {
+          "name": "unpartitioned"
         }
       ]
     },
