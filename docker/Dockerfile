@@ -1,5 +1,5 @@
 # Use a Microsoft image with .NET core runtime (https://hub.docker.com/r/microsoft/dotnet/tags/)
-FROM 2.1-runtime
+FROM microsoft/dotnet:2.1-runtime
 
 # Set the working directory to /work
 WORKDIR /work
