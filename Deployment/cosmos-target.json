@@ -25,6 +25,14 @@
             {
               "name":"oneSproc",
               "targetUrl": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/sproc1.js"
+            },
+            {
+              "name":"oneSproc2",
+              "targetUrl": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/sproc1.js"
+            },
+            {
+              "name":"oneSproc3",
+              "targetUrl": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/sproc1.js"
             }
           ]
         },
