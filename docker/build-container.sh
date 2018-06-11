@@ -14,4 +14,4 @@ sudo docker build -t vplauzon/cosmos-db-target-config .
 sudo docker push vplauzon/cosmos-db-target-config
 
 #	Test image
-#sudo docker run -it vplauzon/cosmos-db-target-config
+#sudo docker run -it vplauzon/cosmos-db-target-config bash
