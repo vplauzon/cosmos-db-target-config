@@ -19,8 +19,7 @@ namespace CosmosTargetConsole.Models
 
         public async Task AddCollectionAsync(CosmosGateway gateway, Database db, string[] destructiveFlags)
         {
-            var ru = RequestUnits ??
-                (PartitionKey == null ? DEFAULT_RU_PARTITIONED : DEFAULT_RU_UNPARTITIONED);
+            int ru = GetEffectiveRequestUnits();
             var collection = await gateway.AddCollectionAsync(
                 db,
                 Name,
@@ -28,6 +27,12 @@ namespace CosmosTargetConsole.Models
                 ru);
 
             await ConvergeTargetAsync(gateway, db, collection, destructiveFlags);
+        }
+
+        private int GetEffectiveRequestUnits()
+        {
+            return RequestUnits ??
+                (PartitionKey == null ? DEFAULT_RU_PARTITIONED : DEFAULT_RU_UNPARTITIONED);
         }
 
         public async Task ConvergeTargetAsync(
@@ -66,7 +71,7 @@ namespace CosmosTargetConsole.Models
             }
             else if (offer != null)
             {
-                var ru = RequestUnits ?? DEFAULT_RU_UNPARTITIONED;
+                var ru = GetEffectiveRequestUnits();
 
                 if (offer.Content.OfferThroughput != ru)
                 {
