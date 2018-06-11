@@ -11,8 +11,15 @@ namespace CosmosTargetConsole.Models
         public string Name { get; set; }
 
         public int? RequestUnits { get; set; }
-        
+
         public CollectionModel[] Collections { get; set; }
+
+        public async Task AddDatabaseAsync(CosmosGateway gateway, string[] destructiveFlags)
+        {
+            var db = await gateway.AddDatabaseAsync(Name);
+
+            await ConvergeTargetAsync(gateway, db, destructiveFlags);
+        }
 
         public async Task ConvergeTargetAsync(
             CosmosGateway gateway,

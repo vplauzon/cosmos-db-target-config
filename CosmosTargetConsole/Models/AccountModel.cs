@@ -62,11 +62,8 @@ namespace CosmosTargetConsole.Models
             {
                 Console.WriteLine($"Adding database:  {target.Name}");
 
-                var db = await gateway.AddDatabaseAsync(target.Name);
-
-                await target.ConvergeTargetAsync(
+                await target.AddDatabaseAsync(
                     gateway,
-                    db,
                     DestructiveFlags);
             }
         }
