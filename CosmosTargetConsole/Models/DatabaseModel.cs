@@ -16,7 +16,7 @@ namespace CosmosTargetConsole.Models
 
         public async Task AddDatabaseAsync(CosmosGateway gateway, string[] destructiveFlags)
         {
-            var db = await gateway.AddDatabaseAsync(Name);
+            var db = await gateway.AddDatabaseAsync(Name, RequestUnits);
 
             await ConvergeTargetAsync(gateway, db, destructiveFlags);
         }
@@ -42,6 +42,7 @@ namespace CosmosTargetConsole.Models
                            select coll;
             var doDestroy = destructiveFlags.Contains("collection");
 
+            await ConvergeOfferAsync(gateway, db);
             await RemovingCollectionsAsync(gateway, toRemove, doDestroy);
             await AddingCollectionsAsync(
                 gateway,
@@ -53,6 +54,34 @@ namespace CosmosTargetConsole.Models
                 db,
                 toUpdate,
                 destructiveFlags);
+        }
+
+        private async Task ConvergeOfferAsync(CosmosGateway gateway, Database db)
+        {
+            var offer = await gateway.GetOfferAsync(db.SelfLink);
+
+            if (offer == null && RequestUnits != null)
+            {
+                throw new NotImplementedException();
+            }
+            else if (offer != null && RequestUnits == null)
+            {
+                throw new NotImplementedException();
+            }
+            else if (offer != null && RequestUnits != null)
+            {
+                if (offer.Content.OfferThroughput != RequestUnits)
+                {
+                    var newOffer = await gateway.ReplaceOfferAsync(
+                        offer,
+                        RequestUnits.Value);
+
+                    if (newOffer.Content.OfferThroughput != RequestUnits)
+                    {
+                        throw new InvalidOperationException("Can't sync throughput RU");
+                    }
+                }
+            }
         }
 
         private async Task RemovingCollectionsAsync(
@@ -108,6 +137,7 @@ namespace CosmosTargetConsole.Models
                 await target.ConvergeTargetAsync(
                     gateway,
                     db,
+                    //RequestUnits != null,
                     coll,
                     destructiveFlags);
             }

@@ -17,14 +17,16 @@ namespace CosmosTargetConsole.Models
 
         public string PartitionKey { get; set; }
 
-        public async Task AddCollectionAsync(CosmosGateway gateway, Database db, string[] destructiveFlags)
+        public async Task AddCollectionAsync(
+            CosmosGateway gateway,
+            Database db,
+            string[] destructiveFlags)
         {
-            int ru = GetEffectiveRequestUnits();
             var collection = await gateway.AddCollectionAsync(
                 db,
                 Name,
                 PartitionKey,
-                ru);
+                RequestUnits);
 
             await ConvergeTargetAsync(gateway, db, collection, destructiveFlags);
         }

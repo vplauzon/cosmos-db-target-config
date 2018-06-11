@@ -30,9 +30,14 @@ namespace CosmosTargetConsole
             await _client.DeleteDatabaseAsync(database.SelfLink);
         }
 
-        public async Task<Database> AddDatabaseAsync(string name)
+        public async Task<Database> AddDatabaseAsync(string name, int? requestUnits)
         {
-            var response = await _client.CreateDatabaseAsync(new Database { Id = name });
+            var response = await _client.CreateDatabaseAsync(
+                new Database { Id = name },
+                new RequestOptions
+                {
+                    OfferThroughput = requestUnits
+                });
 
             return response.Resource;
         }
@@ -55,7 +60,7 @@ namespace CosmosTargetConsole
             Database db,
             string name,
             string partitionKey,
-            int requestUnits)
+            int? requestUnits)
         {
             var collection = new DocumentCollection
             {
