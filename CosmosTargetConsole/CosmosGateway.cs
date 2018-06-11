@@ -111,6 +111,21 @@ namespace CosmosTargetConsole
         }
         #endregion
 
+        #region Offer Operations
+        public async Task<StoredProcedure[]> GetStoredProceduresAsync(DocumentCollection collection)
+        {
+            var query = _client.CreateStoredProcedureQuery(collection.SelfLink);
+            var sprocs = await GetAllResultsAsync(query.AsDocumentQuery());
+
+            return sprocs.ToArray();
+        }
+
+        public async Task DeleteStoredProcedureAsync(StoredProcedure storedProcedure)
+        {
+            await _client.DeleteStoredProcedureAsync(storedProcedure.SelfLink);
+        }
+        #endregion
+
         private async Task<List<T>> GetAllResultsAsync<T>(IDocumentQuery<T> query)
         {
             var list = new List<T>();

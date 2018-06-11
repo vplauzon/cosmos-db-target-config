@@ -1,7 +1,6 @@
 ﻿using CosmosTargetConsole.Models;
 using Newtonsoft.Json;
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CosmosTargetConsole
@@ -21,7 +20,7 @@ namespace CosmosTargetConsole
             Console.WriteLine();
             Console.WriteLine("Target Content:");
 
-            var targetContent = GetContentAsync(targetUrl).Result;
+            var targetContent = ContentHelper.GetContentAsync(targetUrl).Result;
 
             Console.WriteLine();
             Console.WriteLine(targetContent);
@@ -30,14 +29,6 @@ namespace CosmosTargetConsole
             var account = JsonConvert.DeserializeObject<AccountModel>(targetContent);
 
             account.ConvergeTargetAsync(gateway).Wait();
-        }
-
-        private static async Task<string> GetContentAsync(string url)
-        {
-            var client = new HttpClient();
-            var content = await client.GetStringAsync(url);
-
-            return content;
         }
     }
 }

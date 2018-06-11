@@ -17,9 +17,9 @@ namespace CosmosTargetConsole.Models
             var currentDatabases = await gateway.GetDatabasesAsync();
             var currentIds = from db in currentDatabases
                              select db.Id;
-            var targetIds = from db in Databases
+            var targetIds = from db in (Databases ?? new DatabaseModel[0])
                             select db.Name;
-            var toCreate = from db in Databases
+            var toCreate = from db in (Databases ?? new DatabaseModel[0])
                            where !currentIds.Contains(db.Name)
                            select db;
             var toRemove = from db in currentDatabases

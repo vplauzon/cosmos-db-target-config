@@ -29,9 +29,9 @@ namespace CosmosTargetConsole.Models
             var currentCollections = await gateway.GetCollectionsAsync(db);
             var currentIds = from coll in currentCollections
                              select coll.Id;
-            var targetIds = from coll in Collections
+            var targetIds = from coll in (Collections ?? new CollectionModel[0])
                             select coll.Name;
-            var toCreate = from coll in Collections
+            var toCreate = from coll in (Collections ?? new CollectionModel[0])
                            where !currentIds.Contains(coll.Name)
                            select coll;
             var toRemove = from coll in currentCollections
