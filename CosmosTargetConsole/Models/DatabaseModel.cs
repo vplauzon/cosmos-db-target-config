@@ -62,11 +62,13 @@ namespace CosmosTargetConsole.Models
 
             if (offer == null && RequestUnits != null)
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException(
+                    "Can't add request units on a database after creation");
             }
             else if (offer != null && RequestUnits == null)
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException(
+                    "Can't remove request units on a database after creation");
             }
             else if (offer != null && RequestUnits != null)
             {
