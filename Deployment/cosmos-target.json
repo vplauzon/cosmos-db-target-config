@@ -6,22 +6,41 @@
   ],
   "databases": [
     {
-      "name": "mydb",
-      "throughput": {
-        "ru": 50000
-      },
+      "name": "throughput-in-collections",
       "collections": [
         {
-          "name": "mine",
-          "partitionKey":"/dept",
+          "name": "partitioned",
+          "partitionKey": "/dept",
           "throughput": {
             "ru": 1200
           }
         },
         {
-          "name": "yours",
+          "name": "unpartitioned",
           "throughput": {
             "ru": 2500
+          }
+        }
+      ]
+    },
+    {
+      "name": "throughput-in-db",
+      "throughput": {
+        "ru": 50000
+      },
+      "collections": [
+        {
+          "name": "partitioned",
+          "partitionKey": "/dept"
+        },
+        {
+          "name": "unpartitioned"
+        },
+        {
+          "name": "override-throughput",
+          "throughput": {
+            "ru": 2500,
+            "enableRUPerMinute": true
           }
         }
       ]
