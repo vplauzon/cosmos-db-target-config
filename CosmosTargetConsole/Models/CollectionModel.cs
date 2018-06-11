@@ -8,25 +8,24 @@ namespace CosmosTargetConsole.Models
 {
     public class CollectionModel
     {
+        private const int DEFAULT_RU_UNPARTITIONED = 400;
+        private const int DEFAULT_RU_PARTITIONED = 10000;
+
         public string Name { get; set; }
 
-        public ThroughputModel Throughput { get; set; }
+        public int? RequestUnits { get; set; }
 
         public string PartitionKey { get; set; }
 
         public async Task AddCollectionAsync(CosmosGateway gateway, Database db, string[] destructiveFlags)
         {
-            var throughput = Throughput ??
-                (
-                PartitionKey == null
-                ? ThroughputModel.CreateDefaultPartitioned()
-                : ThroughputModel.CreateDefaultUnpartitioned()
-                );
+            var ru = RequestUnits ??
+                (PartitionKey == null ? DEFAULT_RU_PARTITIONED : DEFAULT_RU_UNPARTITIONED);
             var collection = await gateway.AddCollectionAsync(
                 db,
                 Name,
                 PartitionKey,
-                throughput.RU);
+                ru);
 
             await ConvergeTargetAsync(gateway, db, collection, destructiveFlags);
         }
@@ -61,21 +60,21 @@ namespace CosmosTargetConsole.Models
         {
             var offer = await gateway.GetOfferAsync(collection.SelfLink);
 
-            if (offer == null && Throughput != null)
+            if (offer == null && RequestUnits != null)
             {
                 throw new NotImplementedException();
             }
             else if (offer != null)
             {
-                var throughput = Throughput ?? ThroughputModel.CreateDefaultUnpartitioned();
+                var ru = RequestUnits ?? DEFAULT_RU_UNPARTITIONED;
 
-                if (offer.Content.OfferThroughput != throughput.RU)
+                if (offer.Content.OfferThroughput != ru)
                 {
                     var newOffer = await gateway.ReplaceOfferAsync(
                         offer,
-                        throughput.RU);
+                        ru);
 
-                    if (newOffer.Content.OfferThroughput != throughput.RU)
+                    if (newOffer.Content.OfferThroughput != ru)
                     {
                         throw new InvalidOperationException("Can't sync throughput RU");
                     }

@@ -10,6 +10,8 @@ namespace CosmosTargetConsole.Models
     {
         public string Name { get; set; }
 
+        public int? RequestUnits { get; set; }
+        
         public CollectionModel[] Collections { get; set; }
 
         public async Task ConvergeTargetAsync(
