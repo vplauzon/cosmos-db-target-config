@@ -1,4 +1,4 @@
-#	Multi-stage docker build file
+#	Multi-stage docker build file (see https://docs.docker.com/develop/develop-images/multistage-build/)
 #	Use a Microsoft image with .NET core runtime (https://hub.docker.com/r/microsoft/dotnet/tags/)
 FROM microsoft/dotnet:2.1-sdk AS build
 
