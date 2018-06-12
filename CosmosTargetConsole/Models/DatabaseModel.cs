@@ -14,19 +14,17 @@ namespace CosmosTargetConsole.Models
 
         public CollectionModel[] Collections { get; set; }
 
-        public async Task AddDatabaseAsync(CosmosGateway gateway, string[] destructiveFlags)
+        public async Task AddDatabaseAsync(ExecutionContext context)
         {
-            var db = await gateway.AddDatabaseAsync(Name, RequestUnits);
+            var db = await context.Gateway.AddDatabaseAsync(Name, RequestUnits);
 
-            await ConvergeTargetAsync(gateway, db, destructiveFlags);
+            await ConvergeTargetAsync(context.AddDatabase(db));
         }
 
-        public async Task ConvergeTargetAsync(
-            CosmosGateway gateway,
-            Database db,
-            string[] destructiveFlags)
+        public async Task ConvergeTargetAsync(ExecutionContext context)
         {
-            var currentCollections = await gateway.GetCollectionsAsync(db);
+            var currentCollections =
+                await context.Gateway.GetCollectionsAsync(context.Database);
             var currentIds = from coll in currentCollections
                              select coll.Id;
             var targetIds = from coll in (Collections ?? new CollectionModel[0])
@@ -40,25 +38,16 @@ namespace CosmosTargetConsole.Models
             var toUpdate = from coll in currentCollections
                            where targetIds.Contains(coll.Id)
                            select coll;
-            var doDestroy = destructiveFlags.Contains("collection");
 
-            await ConvergeOfferAsync(gateway, db);
-            await RemovingCollectionsAsync(gateway, toRemove, doDestroy);
-            await AddingCollectionsAsync(
-                gateway,
-                db,
-                toCreate,
-                destructiveFlags);
-            await UpdatingCollectionsAsync(
-                gateway,
-                db,
-                toUpdate,
-                destructiveFlags);
+            await ConvergeOfferAsync(context);
+            await RemovingCollectionsAsync(context, toRemove);
+            await AddingCollectionsAsync(context, toCreate);
+            await UpdatingCollectionsAsync(context, toUpdate);
         }
 
-        private async Task ConvergeOfferAsync(CosmosGateway gateway, Database db)
+        private async Task ConvergeOfferAsync(ExecutionContext context)
         {
-            var offer = await gateway.GetOfferAsync(db.SelfLink);
+            var offer = await context.Gateway.GetOfferAsync(context.Database.SelfLink);
 
             if (offer == null && RequestUnits != null)
             {
@@ -74,7 +63,7 @@ namespace CosmosTargetConsole.Models
             {
                 if (offer.Content.OfferThroughput != RequestUnits)
                 {
-                    var newOffer = await gateway.ReplaceOfferAsync(
+                    var newOffer = await context.Gateway.ReplaceOfferAsync(
                         offer,
                         RequestUnits.Value);
 
@@ -89,47 +78,39 @@ namespace CosmosTargetConsole.Models
         }
 
         private async Task RemovingCollectionsAsync(
-            CosmosGateway gateway,
-            IEnumerable<DocumentCollection> toRemove,
-            bool doDestroy)
+            ExecutionContext context,
+            IEnumerable<DocumentCollection> toRemove)
         {
             foreach (var collection in toRemove)
             {
                 Console.WriteLine($"Removing database:  {collection.Id}");
-                if (!doDestroy)
+                if (!context.CanDestroyCollection)
                 {
                     Console.WriteLine("(Skipped:  add Destructive Flags "
                         + "'collection' for destroying collections)");
                 }
                 else
                 {
-                    await gateway.DeleteCollectionAsync(collection);
+                    await context.Gateway.DeleteCollectionAsync(collection);
                 }
             }
         }
 
         private async Task AddingCollectionsAsync(
-            CosmosGateway gateway,
-            Database db,
-            IEnumerable<CollectionModel> toCreate,
-            string[] destructiveFlags)
+            ExecutionContext context,
+            IEnumerable<CollectionModel> toCreate)
         {
             foreach (var target in toCreate)
             {
                 Console.WriteLine($"Adding collection:  {target.Name}");
 
-                await target.AddCollectionAsync(
-                    gateway,
-                    db,
-                    destructiveFlags);
+                await target.AddCollectionAsync(context);
             }
         }
 
         private async Task UpdatingCollectionsAsync(
-            CosmosGateway gateway,
-            Database db,
-            IEnumerable<DocumentCollection> toUpdate,
-            string[] destructiveFlags)
+            ExecutionContext context,
+            IEnumerable<DocumentCollection> toUpdate)
         {
             foreach (var coll in toUpdate)
             {
@@ -138,12 +119,7 @@ namespace CosmosTargetConsole.Models
                               select t).First();
 
                 Console.WriteLine($"Updating collection:  {coll.Id}");
-                await target.ConvergeTargetAsync(
-                    gateway,
-                    db,
-                    //RequestUnits != null,
-                    coll,
-                    destructiveFlags);
+                await target.ConvergeTargetAsync(context.AddCollection(coll));
             }
         }
     }

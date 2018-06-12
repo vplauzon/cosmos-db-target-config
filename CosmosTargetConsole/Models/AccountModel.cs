@@ -12,9 +12,9 @@ namespace CosmosTargetConsole.Models
 
         public DatabaseModel[] Databases { get; set; }
 
-        public async Task ConvergeTargetAsync(CosmosGateway gateway)
+        public async Task ConvergeTargetAsync(ExecutionContext context)
         {
-            var currentDatabases = await gateway.GetDatabasesAsync();
+            var currentDatabases = await context.Gateway.GetDatabasesAsync();
             var currentIds = from db in currentDatabases
                              select db.Id;
             var targetIds = from db in (Databases ?? new DatabaseModel[0])
@@ -29,47 +29,43 @@ namespace CosmosTargetConsole.Models
                            where targetIds.Contains(db.Id)
                            select db;
 
-            await RemovingDbAsync(gateway, toRemove);
-            await AddingDbAsync(gateway, toCreate);
-            await UpdatingDbAsync(gateway, toUpdate);
+            await RemovingDbAsync(context, toRemove);
+            await AddingDbAsync(context, toCreate);
+            await UpdatingDbAsync(context, toUpdate);
         }
 
         private async Task RemovingDbAsync(
-            CosmosGateway gateway,
+            ExecutionContext context,
             IEnumerable<Database> toRemove)
         {
-            var doDestroyDb = DestructiveFlags.Contains("database");
-
             foreach (var db in toRemove)
             {
                 Console.WriteLine($"Removing database:  {db.Id}");
-                if (!doDestroyDb)
+                if (!context.CanDestroyDatabase)
                 {
                     Console.WriteLine("(Skipped:  add Destructive Flags 'database' for destroying dbs)");
                 }
                 else
                 {
-                    await gateway.DeleteDatabaseAsync(db);
+                    await context.Gateway.DeleteDatabaseAsync(db);
                 }
             }
         }
 
         private async Task AddingDbAsync(
-            CosmosGateway gateway,
+            ExecutionContext context,
             IEnumerable<DatabaseModel> toCreate)
         {
             foreach (var target in toCreate)
             {
                 Console.WriteLine($"Adding database:  {target.Name}");
 
-                await target.AddDatabaseAsync(
-                    gateway,
-                    DestructiveFlags);
+                await target.AddDatabaseAsync(context);
             }
         }
 
         private async Task UpdatingDbAsync(
-            CosmosGateway gateway,
+            ExecutionContext context,
             IEnumerable<Database> toUpdate)
         {
             foreach (var db in toUpdate)
@@ -79,7 +75,7 @@ namespace CosmosTargetConsole.Models
                               select t).First();
 
                 Console.WriteLine($"Updating database:  {db.Id}");
-                await target.ConvergeTargetAsync(gateway, db, DestructiveFlags);
+                await target.ConvergeTargetAsync(context.AddDatabase(db));
             }
         }
     }

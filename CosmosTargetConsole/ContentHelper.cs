@@ -8,7 +8,7 @@ namespace CosmosTargetConsole
 {
     public static class ContentHelper
     {
-        public static async Task<string> GetContentAsync(string url)
+        public static async Task<string> GetContentAsync(Uri url)
         {
             var client = new HttpClient();
             var content = await client.GetStringAsync(url);

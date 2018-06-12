@@ -18,7 +18,7 @@ namespace CosmosTargetConsole
             Console.WriteLine($"Target URL:  {targetUrl}");
             Console.WriteLine();
 
-            if(string.IsNullOrWhiteSpace(accountEndpointText))
+            if (string.IsNullOrWhiteSpace(accountEndpointText))
             {
                 Console.WriteLine("Environment Variable ACCOUNT_ENDPOINT missing");
 
@@ -42,16 +42,20 @@ namespace CosmosTargetConsole
             Console.WriteLine("Target Content:");
 
             var gateway = new CosmosGateway(accountEndpoint, key);
-            var targetContent = ContentHelper.GetContentAsync(targetUrl).Result;
+            var targetUri = new Uri(targetUrl);
+            var targetContent = ContentHelper.GetContentAsync(targetUri).Result;
 
             Console.WriteLine();
             Console.WriteLine(targetContent);
             Console.WriteLine();
 
             var account = JsonConvert.DeserializeObject<AccountModel>(targetContent);
+            var context = new ExecutionContext(
+                gateway,
+                targetUri,
+                account.DestructiveFlags);
 
-            account.ConvergeTargetAsync(gateway).Wait();
-
+            account.ConvergeTargetAsync(context).Wait();
             Console.WriteLine();
             Console.WriteLine("Successfully apply configuration");
         }

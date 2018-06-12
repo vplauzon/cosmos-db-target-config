@@ -8,13 +8,13 @@ namespace CosmosTargetConsole.Models
     {
         public string Name { get; set; }
 
-        public string TargetUrl { get; set; }
+        public Uri TargetUrl { get; set; }
 
-        public async Task AddStoredProcedureAsync(CosmosGateway gateway, DocumentCollection collection)
+        public async Task AddStoredProcedureAsync(ExecutionContext context)
         {
-            var body = await ContentHelper.GetContentAsync(TargetUrl);
+            var body = await GetBodyAsync(context);
 
-            await gateway.UpsertStoredProcedureAsync(collection, new StoredProcedure
+            await context.Gateway.UpsertStoredProcedureAsync(context.Collection, new StoredProcedure
             {
                 Id = Name,
                 Body = body
@@ -22,21 +22,30 @@ namespace CosmosTargetConsole.Models
         }
 
         public async Task ConvergeTargetAsync(
-            CosmosGateway gateway,
-            DocumentCollection collection,
+            ExecutionContext context,
             StoredProcedure sproc)
         {
-            var body = await ContentHelper.GetContentAsync(TargetUrl);
+            var body = await GetBodyAsync(context);
 
             if (body != sproc.Body)
             {
                 Console.WriteLine($"Updating stored procedure:  {Name}");
-                await gateway.UpsertStoredProcedureAsync(collection, new StoredProcedure
-                {
-                    Id = Name,
-                    Body = body
-                });
+                await context.Gateway.UpsertStoredProcedureAsync(
+                    context.Collection,
+                    new StoredProcedure
+                    {
+                        Id = Name,
+                        Body = body
+                    });
             }
+        }
+
+        private async Task<string> GetBodyAsync(ExecutionContext context)
+        {
+            var effectiveTargetUri = new Uri(context.ConfigUrl, TargetUrl);
+            var body = await ContentHelper.GetContentAsync(effectiveTargetUri);
+
+            return body;
         }
     }
 }

@@ -19,35 +19,28 @@ namespace CosmosTargetConsole.Models
 
         public StoredProcedureModel[] StoredProcedures { get; set; }
 
-        public async Task AddCollectionAsync(
-            CosmosGateway gateway,
-            Database db,
-            string[] destructiveFlags)
+        public async Task AddCollectionAsync(ExecutionContext context)
         {
-            var collection = await gateway.AddCollectionAsync(
-                db,
+            var collection = await context.Gateway.AddCollectionAsync(
+                context.Database,
                 Name,
                 PartitionKey,
                 RequestUnits);
 
-            await ConvergeTargetAsync(gateway, db, collection, destructiveFlags);
+            await ConvergeTargetAsync(context.AddCollection(collection));
+        }
+
+        public async Task ConvergeTargetAsync(ExecutionContext context)
+        {
+            ValidationPartitionKey(context.Collection.PartitionKey);
+            await ConvergeOfferAsync(context);
+            await ConvergeStoredProcedureAsync(context);
         }
 
         private int GetEffectiveRequestUnits()
         {
             return RequestUnits ??
                 (PartitionKey == null ? DEFAULT_RU_PARTITIONED : DEFAULT_RU_UNPARTITIONED);
-        }
-
-        public async Task ConvergeTargetAsync(
-            CosmosGateway gateway,
-            Database db,
-            DocumentCollection collection,
-            string[] destructiveFlags)
-        {
-            ValidationPartitionKey(collection.PartitionKey);
-            await ConvergeOfferAsync(gateway, collection);
-            await ConvergeStoredProcedureAsync(gateway, collection, destructiveFlags);
         }
 
         private void ValidationPartitionKey(PartitionKeyDefinition partitionKey)
@@ -66,9 +59,9 @@ namespace CosmosTargetConsole.Models
             }
         }
 
-        private async Task ConvergeOfferAsync(CosmosGateway gateway, DocumentCollection collection)
+        private async Task ConvergeOfferAsync(ExecutionContext context)
         {
-            var offer = await gateway.GetOfferAsync(collection.SelfLink);
+            var offer = await context.Gateway.GetOfferAsync(context.Collection.SelfLink);
 
             if (offer == null && RequestUnits != null)
             {
@@ -81,7 +74,7 @@ namespace CosmosTargetConsole.Models
 
                 if (offer.Content.OfferThroughput != ru)
                 {
-                    var newOffer = await gateway.ReplaceOfferAsync(
+                    var newOffer = await context.Gateway.ReplaceOfferAsync(
                         offer,
                         ru);
 
@@ -95,12 +88,10 @@ namespace CosmosTargetConsole.Models
             }
         }
 
-        private async Task ConvergeStoredProcedureAsync(
-            CosmosGateway gateway,
-            DocumentCollection collection,
-            string[] destructiveFlags)
+        private async Task ConvergeStoredProcedureAsync(ExecutionContext context)
         {
-            var currentSprocs = await gateway.GetStoredProceduresAsync(collection);
+            var currentSprocs =
+                await context.Gateway.GetStoredProceduresAsync(context.Collection);
             var currentIds = from s in currentSprocs
                              select s.Id;
             var targetIds = from s in (StoredProcedures ?? new StoredProcedureModel[0])
@@ -114,56 +105,46 @@ namespace CosmosTargetConsole.Models
             var toUpdate = from s in currentSprocs
                            where targetIds.Contains(s.Id)
                            select s;
-            var doDestroy = destructiveFlags.Contains("storedProcedure");
 
-            await RemovingStoredProceduresAsync(gateway, toRemove, doDestroy);
-            await AddingStoredProceduresAsync(
-                gateway,
-                collection,
-                toCreate);
-            await UpdatingStoredProceduresAsync(
-                gateway,
-                collection,
-                toUpdate);
+            await RemovingStoredProceduresAsync(context, toRemove);
+            await AddingStoredProceduresAsync(context, toCreate);
+            await UpdatingStoredProceduresAsync(context, toUpdate);
         }
 
         private async Task RemovingStoredProceduresAsync(
-            CosmosGateway gateway,
-            IEnumerable<StoredProcedure> toRemove,
-            bool doDestroy)
+            ExecutionContext context,
+            IEnumerable<StoredProcedure> toRemove)
         {
             foreach (var sproc in toRemove)
             {
                 Console.WriteLine($"Removing stored procedure:  {sproc.Id}");
-                if (!doDestroy)
+                if (!context.CanDestroyStoredProcedure)
                 {
                     Console.WriteLine("(Skipped:  add Destructive Flags "
                         + "'storedProcedure' for destroying stored procedures)");
                 }
                 else
                 {
-                    await gateway.DeleteStoredProcedureAsync(sproc);
+                    await context.Gateway.DeleteStoredProcedureAsync(sproc);
                 }
             }
         }
 
         private async Task AddingStoredProceduresAsync(
-            CosmosGateway gateway,
-            DocumentCollection collection,
+            ExecutionContext context,
             IEnumerable<StoredProcedureModel> toCreate)
         {
             foreach (var target in toCreate)
             {
                 Console.WriteLine($"Adding stored procedure:  {target.Name}");
 
-                await target.AddStoredProcedureAsync(gateway, collection);
+                await target.AddStoredProcedureAsync(context);
             }
 
         }
 
         private async Task UpdatingStoredProceduresAsync(
-            CosmosGateway gateway,
-            DocumentCollection collection,
+            ExecutionContext context,
             IEnumerable<StoredProcedure> toUpdate)
         {
             foreach (var sproc in toUpdate)
@@ -172,10 +153,7 @@ namespace CosmosTargetConsole.Models
                               where t.Name == sproc.Id
                               select t).First();
 
-                await target.ConvergeTargetAsync(
-                    gateway,
-                    collection,
-                    sproc);
+                await target.ConvergeTargetAsync(context, sproc);
             }
         }
     }
