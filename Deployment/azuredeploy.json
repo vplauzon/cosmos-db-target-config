@@ -10,14 +10,18 @@
       "type": "string",
       "allowedValues": [
         "Single Unpartitioned Collection",
-        "Single Partitioned Collection"
+        "Single Partitioned Collection",
+        "DB Throughput",
+        "Complete Sample"
       ]
     }
   },
   "variables": {
     "Demo Map": {
       "Single Unpartitioned Collection": "single-unpartitioned-collection.json",
-      "Single Partitioned Collection": "single-partitioned-collection.json"
+      "Single Partitioned Collection": "single-partitioned-collection.json",
+      "DB Throughput": "db-throughput.json",
+      "Complete Sample": "single-partitioned-collection.json"
     },
     "Target URL Prefix": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/target-config/",
     "Target URL": "[concat(variables('Target URL Prefix'), variables('Demo Map')[parameters('Demo Target Config File')])]",

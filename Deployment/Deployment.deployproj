@@ -26,11 +26,12 @@
     <Content Include="target-config/single-unpartitioned-collection.json" />
     <Content Include="azuredeploy.json" />
     <Content Include="azuredeploy.parameters.json" />
-    <None Include="cosmos-target.json" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
+    <None Include="target-config\db-throughput.json" />
+    <None Include="target-config\complete.json" />
     <None Include="target-config\single-partitioned-collection.json" />
     <None Include="target-config\sproc1.js" />
   </ItemGroup>

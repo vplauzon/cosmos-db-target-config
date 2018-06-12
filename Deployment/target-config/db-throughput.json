@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/documentation/cosmos-target-schema.json",
+  "destructiveFlags": [
+    "database",
+    "collection",
+    "storedProcedure"
+  ],
+  "databases": [
+    {
+      "name": "db-with-common-throughput",
+      "requestUnits": 50000,
+      "collections": [
+        {
+          "name": "default-throughput",
+          "partitionKey": "/dept"
+        },
+        {
+          "name": "override-throughput",
+          "partitionKey": "/age",
+          "requestUnits": 2500
+        }
+      ]
+    }
+  ]
+}
