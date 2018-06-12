@@ -2,8 +2,23 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "Demo Target Config File": {
+      "defaultValue": "eastus",
+      "metadata": {
+        "description": "This points to different target config file"
+      },
+      "type": "string",
+      "allowedValues": [
+        "Single Unpartitioned Collection"
+      ]
+    }
   },
   "variables": {
+    "Demo Map": {
+      "Single Unpartitioned Collection": "single-unpartitioned-collection.json"
+    },
+    "Target URL Prefix": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/",
+    "Target URL": "[concat(variables('Target URL Prefix'), variables('Demo Map')[parameters('Demo Target Config File')])]",
     "Account Name": "[concat('cosmos-test-account-', uniqueString(concat(resourceGroup().id, 'cosmos')))]",
     "Account Id": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('Account Name'))]"
   },
@@ -46,7 +61,7 @@
                 },
                 {
                   "name": "TARGET_URL",
-                  "value": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/cosmos-target.json"
+                  "value": "[variables('Target URL')]"
                 }
               ],
               "resources": {
@@ -63,5 +78,9 @@
     }
   ],
   "outputs": {
+    "Target Config URL": {
+      "type": "string",
+      "value": "[variables('Target URL')]"
+    }
   }
 }

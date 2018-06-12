@@ -25,6 +25,7 @@
   <ItemGroup>
     <Content Include="azuredeploy.json" />
     <Content Include="azuredeploy.parameters.json" />
+    <None Include="single-unpartitioned-collection.json" />
     <None Include="cosmos-target.json" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
