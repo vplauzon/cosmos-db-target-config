@@ -51,6 +51,9 @@ namespace CosmosTargetConsole
             var account = JsonConvert.DeserializeObject<AccountModel>(targetContent);
 
             account.ConvergeTargetAsync(gateway).Wait();
+
+            Console.WriteLine();
+            Console.WriteLine("Successfully apply configuration");
         }
     }
 }
