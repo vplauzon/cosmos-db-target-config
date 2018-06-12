@@ -1,5 +1,5 @@
 {
-  "$schema": "TODO",
+  "$schema": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/documentation/cosmos-target-schema.json",
   "destructiveFlags": [
     "database",
     "collection",
@@ -23,7 +23,7 @@
           "requestUnits": 2500,
           "storedProcedures": [
             {
-              "name":"oneSproc",
+              "name": "oneSproc",
               "targetUrl": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/sproc1.js"
             }
           ]
