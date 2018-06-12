@@ -1,82 +1,39 @@
 {
-  "$id": "http://example.com/example.json",
   "type": "object",
-  "definitions": {},
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "required": [],
   "properties": {
     "$schema": {
-      "$id": "/properties/$schema",
-      "type": "string",
-      "title": "The $schema Schema ",
-      "default": "",
-      "examples": [
-        "TODO"
-      ]
+      "type": "string"
     },
     "destructiveFlags": {
-      "$id": "/properties/destructiveFlags",
       "type": "array",
       "items": {
-        "$id": "/properties/destructiveFlags/items",
-        "type": "string",
-        "title": "The 0th Schema ",
-        "default": "",
-        "examples": [
-          "database",
-          "collection",
-          "storedProcedure"
-        ]
+        "type": "string"
       }
     },
     "databases": {
-      "$id": "/properties/databases",
       "type": "array",
       "items": {
-        "$id": "/properties/databases/items",
         "type": "object",
+        "required": [],
         "properties": {
           "name": {
-            "$id": "/properties/databases/items/properties/name",
-            "type": "string",
-            "title": "The Name Schema ",
-            "default": "",
-            "examples": [
-              "throughput-in-collections"
-            ]
+            "type": "string"
           },
           "collections": {
-            "$id": "/properties/databases/items/properties/collections",
             "type": "array",
             "items": {
-              "$id": "/properties/databases/items/properties/collections/items",
               "type": "object",
+              "required": [],
               "properties": {
                 "name": {
-                  "$id": "/properties/databases/items/properties/collections/items/properties/name",
-                  "type": "string",
-                  "title": "The Name Schema ",
-                  "default": "",
-                  "examples": [
-                    "partitioned"
-                  ]
+                  "type": "string"
                 },
                 "partitionKey": {
-                  "$id": "/properties/databases/items/properties/collections/items/properties/partitionKey",
-                  "type": "string",
-                  "title": "The Partitionkey Schema ",
-                  "default": "",
-                  "examples": [
-                    "/dept"
-                  ]
+                  "type": "string"
                 },
                 "requestUnits": {
-                  "$id": "/properties/databases/items/properties/collections/items/properties/requestUnits",
-                  "type": "integer",
-                  "title": "The Requestunits Schema ",
-                  "default": 0,
-                  "examples": [
-                    1200
-                  ]
+                  "type": "number"
                 }
               }
             }
