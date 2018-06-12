@@ -9,13 +9,15 @@
       },
       "type": "string",
       "allowedValues": [
-        "Single Unpartitioned Collection"
+        "Single Unpartitioned Collection",
+        "Single Partitioned Collection"
       ]
     }
   },
   "variables": {
     "Demo Map": {
-      "Single Unpartitioned Collection": "single-unpartitioned-collection.json"
+      "Single Unpartitioned Collection": "single-unpartitioned-collection.json",
+      "Single Partitioned Collection": "single-partitioned-collection.json"
     },
     "Target URL Prefix": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/target-config/",
     "Target URL": "[concat(variables('Target URL Prefix'), variables('Demo Map')[parameters('Demo Target Config File')])]",

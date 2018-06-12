@@ -31,7 +31,8 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
-    <None Include="sproc1.js" />
+    <None Include="target-config\single-partitioned-collection.json" />
+    <None Include="target-config\sproc1.js" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

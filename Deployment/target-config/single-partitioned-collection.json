@@ -10,11 +10,12 @@
       "name": "simple-db",
       "collections": [
         {
-          "name": "unpartitioned-with-sproc",
-          "requestUnits": 600,
+          "name": "partitioned-with-sproc",
+          "partitionKey": "/dept",
+          "requestUnits": 1200,
           "storedProcedures": [
             {
-              "name":"oneSproc",
+              "name": "oneSproc",
               "targetUrl": "sproc1.js"
             }
           ]

@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Demo Target Config File": {
-      "value": "Single Unpartitioned Collection"
+      "value": "Single Partitioned Collection"
     }
   }
 }
