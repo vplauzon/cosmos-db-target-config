@@ -24,7 +24,7 @@
           "storedProcedures": [
             {
               "name":"oneSproc",
-              "targetUrl": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/sproc1.js"
+              "targetUrl": "sproc1.js"
             }
           ]
         },
