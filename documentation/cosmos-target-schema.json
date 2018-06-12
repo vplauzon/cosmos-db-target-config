@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "required": [],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "destructiveFlags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "databases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "collections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "partitionKey": {
+                  "type": "string"
+                },
+                "requestUnits": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
