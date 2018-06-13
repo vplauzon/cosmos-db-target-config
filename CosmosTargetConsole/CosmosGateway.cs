@@ -125,11 +125,16 @@ namespace CosmosTargetConsole
             await _client.DeleteStoredProcedureAsync(storedProcedure.SelfLink);
         }
 
-        public async Task UpsertStoredProcedureAsync(
+        public async Task CreateStoredProcedureAsync(
             DocumentCollection collection,
             StoredProcedure storedProcedure)
         {
-            await _client.UpsertStoredProcedureAsync(collection.SelfLink, storedProcedure);
+            await _client.CreateStoredProcedureAsync(collection.SelfLink, storedProcedure);
+        }
+
+        public async Task ReplaceStoredProcedureAsync(StoredProcedure storedProcedure)
+        {
+            await _client.ReplaceStoredProcedureAsync(storedProcedure);
         }
         #endregion
 

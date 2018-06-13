@@ -14,7 +14,7 @@ namespace CosmosTargetConsole.Models
         {
             var body = await GetBodyAsync(context);
 
-            await context.Gateway.UpsertStoredProcedureAsync(context.Collection, new StoredProcedure
+            await context.Gateway.CreateStoredProcedureAsync(context.Collection, new StoredProcedure
             {
                 Id = Name,
                 Body = body
@@ -30,13 +30,8 @@ namespace CosmosTargetConsole.Models
             if (body != sproc.Body)
             {
                 Console.WriteLine($"Updating stored procedure:  {Name}");
-                await context.Gateway.UpsertStoredProcedureAsync(
-                    context.Collection,
-                    new StoredProcedure
-                    {
-                        Id = Name,
-                        Body = body
-                    });
+                sproc.Body = body;
+                await context.Gateway.ReplaceStoredProcedureAsync(sproc);
             }
         }
 
