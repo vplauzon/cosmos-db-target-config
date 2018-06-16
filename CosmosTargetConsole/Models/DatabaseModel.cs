@@ -83,7 +83,7 @@ namespace CosmosTargetConsole.Models
         {
             foreach (var collection in toRemove)
             {
-                Console.WriteLine($"Removing database:  {collection.Id}");
+                Console.WriteLine($"Removing collection:  {collection.Id}");
                 if (!context.CanDestroyCollection)
                 {
                     Console.WriteLine("(Skipped:  add Destructive Flags "
