@@ -1,6 +1,10 @@
 {
+  "id": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/documentation/cosmos-target-schema.json",
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "required": [],
+  "required": [
+    "$schema"
+  ],
   "properties": {
     "$schema": {
       "type": "string"
