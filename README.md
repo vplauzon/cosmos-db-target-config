@@ -2,7 +2,7 @@
 
 Configuration Mangement solution for  Cosmos DB account.
 
-See <TODO>[this article]() explaining the objective of the solution and how to use it.
+See **TODO**[this article]() explaining the objective of the solution and how to use it.
 
 Example of usage can be found in this [ARM Template](https://github.com/vplauzon/cosmos-db-target-config/blob/master/Deployment/azuredeploy.json) which can be deployed here:
 
