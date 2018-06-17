@@ -13,6 +13,8 @@ Example of usage can be found in this [ARM Template](https://github.com/vplauzon
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
+The [sample target configuration files are here](https://github.com/vplauzon/cosmos-db-target-config/tree/master/Deployment/target-config).
+
 It is recommended to use this solution packaged in a container.  Find the container image on [Docker Hub](https://hub.docker.com/r/vplauzon/cosmos-db-target-config/).
 
 This solution currently supports:
