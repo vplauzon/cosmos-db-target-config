@@ -25,7 +25,7 @@
     },
     "Target URL Prefix": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/target-config/",
     "Target URL": "[concat(variables('Target URL Prefix'), variables('Demo Map')[parameters('Demo Target Config File')])]",
-    "Account Name": "[concat('cosmos-test-account-', uniqueString(concat(resourceGroup().id, 'cosmos')))]",
+    "Account Name": "[concat('cosmos-test-account-', uniqueString(concat(subscription().id, resourceGroup().id, 'cosmos')))]",
     "Account Id": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('Account Name'))]"
   },
   "resources": [
